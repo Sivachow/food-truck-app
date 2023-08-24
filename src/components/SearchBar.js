@@ -1,26 +1,40 @@
-import React from "react";
-import { TextField } from "@mui/material";
+import React, { useState } from "react";
+import debounce from "lodash/debounce";
 
 /**
- * Renders a search input field for food items or names.
- *
- * @component
- * @param {string} searchTerm - The current search term.
- * @param {function} onSearchTermChange - Callback function to handle search term changes.
- * @returns {JSX.Element} - A search input field.
- * @example
- * return <SearchBar searchTerm={searchTerm} onSearchTermChange={handleSearchTermChange} />;
+ * A component that provides a search input and button for filtering data.
+ * 
+ * @param {function} onSearch - Callback function to handle search action.
+ * @returns {JSX.Element} - Rendered search bar component.
  */
-function SearchBar({ searchTerm, onSearchTermChange }) {
+function SearchBar({ onSearch }) {
+  // State variable to track the search term
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Debounce the search callback with a delay of 300ms
+  const debouncedSearch = debounce(onSearch, 300);
+
+  // Function to trigger the search callback
+  const handleSearch = () => {
+    debouncedSearch(searchTerm);
+  };
+
   return (
-    <TextField
-      label="Search Food Items or Name"
-      value={searchTerm}
-      onChange={(e) => onSearchTermChange(e.target.value)}
-      fullWidth
-      margin="normal"
-      variant="outlined"
-    />
+    <div className="search-container">
+      {/* Input for entering search term */}
+      <input
+        className="search-input"
+        type="text"
+        placeholder="Search Food Items or Name"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      
+      {/* Button to initiate search */}
+      <button className="search-button" onClick={handleSearch}>
+        Search
+      </button>
+    </div>
   );
 }
 
